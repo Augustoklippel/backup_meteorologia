@@ -9,9 +9,19 @@ from tkinter import TclError, ttk, filedialog
 from tkinter.messagebox import showinfo, showerror
 import shutil
 from tkcalendar import DateEntry
+from openpyxl import Workbook, load_workbook
+import pandas as pd
 
 list_db_files = ["/Torre-A1/WIFI/TorreA1_15M_BD.dat", "/Torre-A1/GPRS/TorreA1_15M_BD.dat", 
-                 "/Torre-A2/WIFI/TorreA2_15M_BD.dat", "/Torre-A2/GPRS/TorreA2_15M_BD.dat"]
+                 "/Torre-A2/WIFI/TorreA2_15M_BD.dat", "/Torre-A2/GPRS/TorreA2_15M_BD.dat",
+                 "/Torre-B/WIFI/TorreB_15M_BD.dat", "/Torre-B/GPRS/TorreB_15M_BD.dat",
+                 "/Torre-C/WIFI/TorreC_15M_BD.dat", "/Torre-C/GPRS/TorreC_15M_BD.dat",
+                 "/Torre-D/WIFI/TorreD_15M_BD.dat", "/Torre-D/GPRS/TorreD_15M_BD.dat",
+                 "/Torre-E1/WIFI/TorreE1_15M_BD.dat", "/Torre-E1/GPRS/TorreE1_15M_BD.dat",
+                 "/Torre-E2/WIFI/TorreE2_15M_BD.dat", "/Torre-E2/GPRS/TorreE2_15M_BD.dat",
+                 "/Torre-F/WIFI/TorreF_15M_BD.dat", "/Torre-F/GPRS/TorreF_15M_BD.dat",
+                 "/Torre-G/WIFI/TorreG_15M_BD.dat", "/Torre-G/GPRS/TorreG_15M_BD.dat"
+                 ]
 
 is_updated = False
 
@@ -31,31 +41,56 @@ def update_files():
                 nrRegistros.set(nr_registros)
                 #print("O total de dias é", nrDias.get()) 
                 #print("O total de registros esperados é", nrRegistros.get()) 
-                totTorreA1.set(nrRegistros.get())
-                totTorreA2.set(nrRegistros.get())
-                totTorreB.set(nrRegistros.get())
-                totTorreC.set(nrRegistros.get())
-                totTorreD.set(nrRegistros.get())
-                totTorreE1.set(nrRegistros.get())
-                totTorreE2.set(nrRegistros.get())
-                totTorreF.set(nrRegistros.get())
-                totTorreG.set(nrRegistros.get())
+                
                 #print(origem.get()+list_db_files[0])
                 #print(date_format(dtInicio.get(),True))
                 #print(date_format(dtFinal.get(),False))
-                output_files(origem.get()+list_db_files[0], origem.get()+list_db_files[1], date_format(dtInicio.get(),True), date_format(dtFinal.get(), False), True)
-                output_files(origem.get()+list_db_files[2], origem.get()+list_db_files[3], date_format(dtInicio.get(),True), date_format(dtFinal.get(), False), True)
+                root.config(cursor="fleur")
+                root.update()
+                count = output_files(origem.get()+list_db_files[0], origem.get()+list_db_files[1], date_format(dtInicio.get(),True), date_format(dtFinal.get(), False), True)
+                totTorreA1.set(nrRegistros.get()+" / "+str(count))
+                resTorreA1.set(str(round(((int(count) / int(nrRegistros.get())) * 100),2))+" % ")
+                count = output_files(origem.get()+list_db_files[2], origem.get()+list_db_files[3], date_format(dtInicio.get(),True), date_format(dtFinal.get(), False), True)
+                totTorreA2.set(nrRegistros.get()+" / "+str(count))
+                resTorreA2.set(str(round(((int(count) / int(nrRegistros.get())) * 100),2))+" % ")
+                count = output_files(origem.get()+list_db_files[4], origem.get()+list_db_files[5], date_format(dtInicio.get(),True), date_format(dtFinal.get(), False), False)
+                totTorreB.set(nrRegistros.get()+" / "+str(count))
+                resTorreB.set(str(round(((int(count) / int(nrRegistros.get())) * 100),2))+" % ")
+                count = output_files(origem.get()+list_db_files[6], origem.get()+list_db_files[7], date_format(dtInicio.get(),True), date_format(dtFinal.get(), False), False)
+                totTorreC.set(nrRegistros.get()+" / "+str(count))
+                resTorreC.set(str(round(((int(count) / int(nrRegistros.get())) * 100),2))+" % ")
+                count = output_files(origem.get()+list_db_files[8], origem.get()+list_db_files[9], date_format(dtInicio.get(),True), date_format(dtFinal.get(), False), False)
+                totTorreD.set(nrRegistros.get()+" / "+str(count))
+                resTorreD.set(str(round(((int(count) / int(nrRegistros.get())) * 100),2))+" % ")
+                count = output_files(origem.get()+list_db_files[10], origem.get()+list_db_files[11], date_format(dtInicio.get(),True), date_format(dtFinal.get(), False), False)
+                totTorreE1.set(nrRegistros.get()+" / "+str(count))
+                resTorreE1.set(str(round(((int(count) / int(nrRegistros.get())) * 100),2))+" % ")
+                count = output_files(origem.get()+list_db_files[12], origem.get()+list_db_files[13], date_format(dtInicio.get(),True), date_format(dtFinal.get(), False), False)
+                totTorreE2.set(nrRegistros.get()+" / "+str(count))
+                resTorreE2.set(str(round(((int(count) / int(nrRegistros.get())) * 100),2))+" % ")
+                count = output_files(origem.get()+list_db_files[14], origem.get()+list_db_files[15], date_format(dtInicio.get(),True), date_format(dtFinal.get(), False), False)
+                totTorreF.set(nrRegistros.get()+" / "+str(count))
+                resTorreF.set(str(round(((int(count) / int(nrRegistros.get())) * 100),2))+" % ")
+                count = output_files(origem.get()+list_db_files[16], origem.get()+list_db_files[17], date_format(dtInicio.get(),True), date_format(dtFinal.get(), False), False)
+                totTorreG.set(nrRegistros.get()+" / "+str(count))
+                resTorreG.set(str(round(((int(count) / int(nrRegistros.get())) * 100),2))+" % ")
+                root.config(cursor="")
+                showinfo("Sucesso","As planilhas foram geradas com sucesso !")
     else:
         showerror("Selecione", "Selecione a localização dos dados!")
      
 def output_files(file_wifi, file_gprs, data_ini, data_fim, is_Torre_A = True):
-    dados_torre = []
+    dados_torre_wifi = []
+    dados_torre_gprs = []
     date_error = []
+    date_error_index = []
     count_data = 0
     count_error = 0
+    total_count = 0
     file_name_ext = os.path.basename(file_wifi)
     file_name = file_name_ext.split('.', 1)[0] + "_" + data_ini[0:10] + "-" + data_fim[0:10] + ".xlsx"
     data_final = increment_date(data_fim)
+    #pb.configure(maximum=int(nrRegistros.get()))
     # Busca os dados do perido selecionado na tabela WIFI
     with open(file_wifi) as f:
         line = f.readline()
@@ -67,26 +102,31 @@ def output_files(file_wifi, file_gprs, data_ini, data_fim, is_Torre_A = True):
                 if is_date(line[1:5],line[6:8],line[9:11]):
                     #print(line[1:5], "=>", line[6:8], "=>", line[9:11], "=>", data_atual)
                     if data_atual == format_midnight(line[1:20]):
-                        dados_torre.append(line)
                         count_data += 1
-                        print(line)
+                        dados_torre_wifi.append(line + ", "+ str(count_data))
+                        total_count+=1
+                        #print(line)
                         data_atual = increment_date(data_atual)
                     elif datetime.strptime(format_midnight(line[1:20]), "%Y-%m-%d %H:%M:%S") > datetime.strptime(data_atual, "%Y-%m-%d %H:%M:%S"):
-                        dados_torre.append(line)
-                        count_data += 1
+                        count_data += 2
+                        dados_torre_wifi.append(line+ ", "+ str(count_data))
+                        total_count+=1
                         count_error += 1
                         date_error.append(data_atual)
-                        print(line)
-                        data_atual = increment_date(data_atual)
+                        date_error_index.append((count_data - 1))
+                        count_data += 1
+                        #print(line)
+                        data_atual = increment_date(format_midnight(line[1:20]))
                     else:
                         line = f.readline()
                 else:                  
                     line = f.readline()
-                
             else:
                 #print("Foram encontrados",count_data, "registros e tiveram", count_error, "dados faltantes!")
-                #print(date_error)
                 break
+            
+            #var_bar.set(total_count)
+            #root.update()
     # Busca os dados faltantes na tabela GPRS
     if len(date_error) > 0:
         with open(file_gprs) as f:
@@ -97,10 +137,11 @@ def output_files(file_wifi, file_gprs, data_ini, data_fim, is_Torre_A = True):
                 if datetime.strptime(data_final, "%Y-%m-%d %H:%M:%S") > datetime.strptime(data_atual, "%Y-%m-%d %H:%M:%S"):
                     if is_date(line[1:5],line[6:8],line[9:11]):
                         if data_atual == format_midnight(line[1:20]):
-                            dados_torre.append(line)
+                            dados_torre_gprs.append(line+ ", "+ str(date_error_index[i]))
+                            total_count+=1
                             count_data += 1
                             count_error -= 1
-                            print(line)
+                            #print(line)
                             i += 1
                             
                             if i  < len(date_error):
@@ -109,7 +150,7 @@ def output_files(file_wifi, file_gprs, data_ini, data_fim, is_Torre_A = True):
                                 break
                         elif datetime.strptime(format_midnight(line[1:20]), "%Y-%m-%d %H:%M:%S") > datetime.strptime(data_atual, "%Y-%m-%d %H:%M:%S"):
                             i += 1
-                            print(i, "===>", len(date_error))
+                            #print(i, "===>", len(date_error))
                             if i  < len(date_error):
                                 data_atual = date_error[i]
                             else:
@@ -120,22 +161,56 @@ def output_files(file_wifi, file_gprs, data_ini, data_fim, is_Torre_A = True):
                 else:
                     break
                 
-        print("Foram encontrados",count_data, "registros e tiveram", count_error, "dados faltantes!")
-        print(date_error)
-        print("Nome_arquivo", file_name)
+                #var_bar.set(total_count)
+                #root.update()
+                
+        print("Foram encontrados",total_count, "registros e tiveram", count_error, "dados faltantes!")
+        #print(date_error)
+        #print("Nome_arquivo", file_name)
+        create_spreadsheet(file_name, dados_torre_wifi, dados_torre_gprs, is_Torre_A)
+        return total_count
 
-def create_spreadsheet(lista1, lista2, tipo):
-    pass
+def create_spreadsheet(name: str, lista1: list, lista2: list, is_tower_a: bool):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = 'dados'
+    if is_tower_a == True:
+        title = ["TIMESTAMP","RECORD","WS100","WD100","SIG100","WS60","WD60","SIG60","WS10","WD10","SIG10","TAr_100m_Avg","TAr_60m_Avg","TAr_10m_Avg","RH_Avg","SR_Avg","DT1",
+                 "DT2","DT3","WG_Max","WG_2_Max","WG_3_Max","TAr_10m_Min","TAr_60m_Min","TAr_100m_Min","TAr_10m_Max","TAr_60m_Max","TAr_100m_Max","DT1_Min","DT2_Min","DT3_Min",
+                 "DT1_Max","DT2_Max","DT3_Max","RH_Min","RH_Max","SR_Min","SR_Max","RNTOT15","PASQUILH","PASQUILV","Bateria_URA2","Bateria_SA3","Bateria_SA4","Recarga_SA3",
+                 "Recarga_SA4","UR_Int","Porta_URA2","Porta_SA","Index"]
+    else:
+        title = ['TIMESTAMP','RECORD', 'WS' ,'WD' ,'SIG' ,'WG_Max' ,'PASQUILH' ,'Bat_UR' ,'Bat_SA1' ,'Bat_SA2' ,'Recarga_SA1' ,'Recarga_SA2' ,'UR_Int' ,'Porta_UR','Porta_SA', 'Index']
+    
+    ws.append(title)
+    
+    for line1 in lista1:
+        list_field1 =  line1.split(',')
+        date_format = list_field1[0] 
+        list_field1[0] = date_format[1:20]
+        ws.append(list_field1)
+    
+    for line2 in lista2:
+        list_field2 = line2.split(',')
+        date_format = list_field2[0] 
+        list_field2[0] = date_format[1:20]
+        ws.append(list_field2)
+    
+    wb.save(name)
+    df = pd.read_excel(name)
+    df = df.sort_values('Index')
+    df.drop(['Index','RECORD'], axis=1, inplace=True)
+    df.to_excel(name, index=False)
+    #df.save()
 
 def date_format(date_unformated, is_initial = True):
     resultado = date_unformated[6:11]+"-"+ date_unformated[3:5]+"-"+ date_unformated[0:2]
     if is_initial:
-        return resultado + " 00:15:00"
+        return resultado + " 00:00:00"
     else:
         return resultado + " 23:45:00"
 
 def increment_date(date):
-    #2024-02-01 00:15:00
     if date[11:16]  == "23:45":
         return add_day(date[0:10])  + " 00:00:00"
     else:
@@ -158,7 +233,6 @@ def add_day(date):
     return return_day[0:10]
 
 def format_midnight(date):
-    #2018-02-19 24:00:00
     if date[11:13] == "24":
         return date[0:11]+"00:00:00"
     else:
@@ -234,7 +308,7 @@ if __name__ == "__main__":
     
     root.columnconfigure(0, weight=1)
     ttk.Label(root, text='Localização dos dados:').grid(column=0, row=0, sticky=tk.W)
-    txt_origem = ttk.Entry(root, width=50, textvariable=origem)
+    txt_origem = ttk.Entry(root, width=52, textvariable=origem)
     txt_origem.grid(column=1, row=0, sticky=tk.W, columnspan=3)
 
     root.columnconfigure(0, weight=1)
@@ -292,12 +366,6 @@ if __name__ == "__main__":
     ttk.Label(root, text='Torre G', borderwidth=2, relief="ridge", width=22, anchor="center").grid(column=0, row=14, sticky=tk.W)
     tot_torre_g = ttk.Entry(root, width=30, textvariable=totTorreG).grid(column=1, row=14, sticky=tk.W, columnspan=2)
     res_torre_g = ttk.Entry(root, width=15, textvariable=resTorreG).grid(column=3, row=14, sticky=tk.W)
-    
-    # place the progressbar
-    var_bar = tk.DoubleVar()
-    pb = ttk.Progressbar(root, orient='horizontal', variable=var_bar, mode='determinate', length=280)
-    pb.grid(column=0, row=16, columnspan=2, padx=10, pady=20)
-    
     # label
     value_label = ttk.Label(root, text="")
     value_label.grid(column=0, row=18, columnspan=2)
