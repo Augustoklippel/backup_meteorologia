@@ -1,4 +1,4 @@
-# Aplicação de Backup dos dados da Backup.
+# Aplicação de Backup dos dados da Meteorologia (Campbell).
 
 ## *Informaçôes:*
 * Desenvolvido em Python 3.12.0b3
