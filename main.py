@@ -45,7 +45,7 @@ def update_files():
                 #print(origem.get()+list_db_files[0])
                 #print(date_format(dtInicio.get(),True))
                 #print(date_format(dtFinal.get(),False))
-                root.config(cursor="fleur")
+                root.config(cursor="exchange")
                 root.update()
                 count = output_files(origem.get()+list_db_files[0], origem.get()+list_db_files[1], date_format(dtInicio.get(),True), date_format(dtFinal.get(), False), True)
                 totTorreA1.set(nrRegistros.get()+" / "+str(count))
@@ -195,6 +195,7 @@ def create_spreadsheet(name: str, lista1: list, lista2: list, is_tower_a: bool):
         date_format = list_field2[0] 
         list_field2[0] = date_format[1:20]
         ws.append(list_field2)
+    name = os.path.dirname(os.path.abspath(__file__)) + "\\" + name
     
     wb.save(name)
     df = pd.read_excel(name)
@@ -371,5 +372,3 @@ if __name__ == "__main__":
     value_label.grid(column=0, row=18, columnspan=2)
       
     root.mainloop()
-    
-
