@@ -5,12 +5,13 @@ from datetime import timedelta
 from os.path import exists, isfile
 from pathlib import Path
 import tkinter as tk
-from tkinter import TclError, ttk, filedialog
-from tkinter.messagebox import showinfo, showerror
+from tkinter import TclError, ttk, filedialog, simpledialog
+from tkinter.messagebox import showinfo, showerror, askyesno
 import shutil
 from tkcalendar import DateEntry
 from openpyxl import Workbook, load_workbook
 import pandas as pd
+import zipfile
 
 list_db_files = ["/Torre-A1/WIFI/TorreA1_15M_BD.dat", "/Torre-A1/GPRS/TorreA1_15M_BD.dat", 
                  "/Torre-A2/WIFI/TorreA2_15M_BD.dat", "/Torre-A2/GPRS/TorreA2_15M_BD.dat",
@@ -22,6 +23,8 @@ list_db_files = ["/Torre-A1/WIFI/TorreA1_15M_BD.dat", "/Torre-A1/GPRS/TorreA1_15
                  "/Torre-F/WIFI/TorreF_15M_BD.dat", "/Torre-F/GPRS/TorreF_15M_BD.dat",
                  "/Torre-G/WIFI/TorreG_15M_BD.dat", "/Torre-G/GPRS/TorreG_15M_BD.dat"
                  ]
+
+list_file_name = []
 
 is_updated = False
 
@@ -84,7 +87,20 @@ def update_files():
                     totTorreG.set(nrRegistros.get()+" / "+str(count))
                     resTorreG.set(str(round(((int(count) / int(nrRegistros.get())) * 100),2))+" % ")
                 root.config(cursor="")
-                showinfo("Sucesso","As planilhas foram geradas com sucesso !")
+                #showinfo("Sucesso","As planilhas foram geradas com sucesso !")
+                result = askyesno("Sucesso", "As planilhas foram geradas com sucesso !\n Deseja criar um arquivo compactado?")
+                if result:
+                    file_name = simpledialog.askstring("Arquivo", "Informe o nome do arquivo:", initialvalue="")
+                    global list_file_name
+                    with zipfile.ZipFile(file_name+'.zip', 'a') as myzip:
+                        for file in list_file_name:
+                            #print("Comprimindo o arquivo", file)
+                            myzip.write(file, arcname=os.path.basename(file))
+                            #myzip.write(file)
+                        showinfo("Sucesso","As planilhas foram compactadas com sucesso !")
+                        
+                list_file_name = []
+                
     else:
         showerror("Selecione", "Selecione a localização dos dados!")
      
@@ -204,8 +220,10 @@ def create_spreadsheet(name: str, lista1: list, lista2: list, is_tower_a: bool):
         date_format = list_field2[0] 
         list_field2[0] = date_format[1:20]
         ws.append(list_field2)
-    name = os.path.dirname(os.path.abspath(__file__)) + "\\" + name
     
+    name = os.path.dirname(os.path.abspath(__file__)) + "\\" + name
+    list_file_name.append(name)
+         
     wb.save(name)
     df = pd.read_excel(name)
     df = df.sort_values('Index')
