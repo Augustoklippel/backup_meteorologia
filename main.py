@@ -140,7 +140,7 @@ def output_files(file_wifi, file_gprs, data_ini, data_fim, is_Torre_A = True):
                         date_error.append(data_atual)
                         date_error_index.append((count_data - 1))
                         count_data += 1
-                        #print(line)
+                         #print(line)
                         data_atual = increment_date(format_midnight(line[1:20]))
                     else:
                         line = f.readline()
@@ -152,8 +152,11 @@ def output_files(file_wifi, file_gprs, data_ini, data_fim, is_Torre_A = True):
             
             #var_bar.set(total_count)
             #root.update()
+    #print("Tipo 1:", type(total_count), ", Valor 1:", total_count)
+    #print(file_gprs, " -> ",date_error)
     # Busca os dados faltantes na tabela GPRS
     if len(date_error) > 0:
+        
         with open(file_gprs) as f:
             line = f.readline()
             i = 0
@@ -168,7 +171,7 @@ def output_files(file_wifi, file_gprs, data_ini, data_fim, is_Torre_A = True):
                             count_error -= 1
                             #print(line)
                             i += 1
-                            
+                            #print(total_count)
                             if i  < len(date_error):
                                 data_atual = date_error[i]
                             else:
@@ -189,11 +192,12 @@ def output_files(file_wifi, file_gprs, data_ini, data_fim, is_Torre_A = True):
                 #var_bar.set(total_count)
                 #root.update()
                 
-        print("Foram encontrados",total_count, "registros e tiveram", count_error, "dados faltantes!")
-        #print(date_error)
-        #print("Nome_arquivo", file_name)
-        create_spreadsheet(file_name, dados_torre_wifi, dados_torre_gprs, is_Torre_A)
-        return total_count
+    print("Foram encontrados",total_count, "registros e tiveram", count_error, "dados faltantes!")
+    #print(date_error)
+    #print("Nome_arquivo", file_name)
+    create_spreadsheet(file_name, dados_torre_wifi, dados_torre_gprs, is_Torre_A)
+    #print("Tipo 3:", type(total_count), ", Valor 3:", total_count)
+    return total_count
 
 def create_spreadsheet(name: str, lista1: list, lista2: list, is_tower_a: bool):
     wb = Workbook()
